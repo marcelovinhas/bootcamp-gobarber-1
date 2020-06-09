@@ -31,6 +31,11 @@ class User extends Model {
     return this;
   }
 
+  // ADICIONAR AVATAR_ID NO SUPER.INIT PODE DAR PROBLEMA ENTÃO:
+  static associate(models) {
+    this.belongsTo(models.File, {foreignKey: 'avatar_id' }); // model de usuário percence ao model de file
+  }
+
   checkPassword(password) {
     return bcrypt.compare(password, this.password_hash); // compara a senha que o usuário tenta logar com a senha do banco de dados
   }
