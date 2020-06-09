@@ -5,7 +5,7 @@
 // e só pode ter 5 métodos: index, show, store, update e delete dentro de um controller
 import jwt from 'jsonwebtoken'; // yarn add jsonwebtoken
 import * as Yup from 'yup';
-
+// teste
 import User from '../models/User';
 import authConfig from '../../config/auth';
 
