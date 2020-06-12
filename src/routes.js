@@ -9,6 +9,7 @@ import FileController from './app/controllers/FileController';
 import ProviderController from './app/controllers/ProviderController';
 
 import authMiddleware from './app/middlewares/auth';
+import AppointmentController from './app/controllers/AppointmentController';
 
 const routes = new Router();
 const upload = multer(multerConfig);
@@ -27,6 +28,9 @@ routes.put('/users', UserController.update);
 
 // rota para listagem dos prestadores de serviço
 routes.get ('/providers', ProviderController.index);
+
+// rota para agendamento
+routes.post('/appointments', AppointmentController.store);
 
 // rota do multer - imagem, no Insomnia criar post em multipart em vez de JSON
 // single para fazer um upload por vez e não vários e o nome do campo da requisição file
