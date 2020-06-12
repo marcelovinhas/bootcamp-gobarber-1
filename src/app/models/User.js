@@ -33,7 +33,9 @@ class User extends Model {
 
   // ADICIONAR AVATAR_ID NO SUPER.INIT PODE DAR PROBLEMA ENTÃO:
   static associate(models) {
-    this.belongsTo(models.File, {foreignKey: 'avatar_id' }); // model de usuário percence ao model de file
+    this.belongsTo(models.File, {foreignKey: 'avatar_id', as: 'avatar'});
+    // model de usuário percence ao model de file
+    // as: 'avatar' para no Insomnia aparecer avatar em vez de FILE (ProviderController.js)
   }
 
   checkPassword(password) {

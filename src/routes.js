@@ -6,6 +6,7 @@ import multerConfig from './config/multer';
 import UserController from './app/controllers/UserController';
 import SessionController from './app/controllers/SessionController';
 import FileController from './app/controllers/FileController';
+import ProviderController from './app/controllers/ProviderController';
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -24,10 +25,13 @@ routes.use(authMiddleware);
 // rota para atualizar dados
 routes.put('/users', UserController.update);
 
+// rota para listagem dos prestadores de serviço
+routes.get ('/providers', ProviderController.index);
 
 // rota do multer - imagem, no Insomnia criar post em multipart em vez de JSON
 // single para fazer um upload por vez e não vários e o nome do campo da requisição file
 routes.post ('/files', upload.single('file'),FileController.store);
+
 
 
 export default routes;

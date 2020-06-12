@@ -9,6 +9,12 @@ class File extends Model {
         // os campos dentro do model, não precisam ser um reflexo dos campos da base de dados
         name: Sequelize.STRING,
         path: Sequelize.STRING,
+        url: {
+          type: Sequelize.VIRTUAL,
+          get() {
+            return `http://localhost:3333/files/${this.path}`;
+          }
+        }
       },
       {
         sequelize, // o sequelize recebido no parâmetro static init (sequelize) precisa ser passado
