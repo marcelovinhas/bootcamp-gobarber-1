@@ -16,6 +16,7 @@ APP - maioria do código que envolve regra de negócio, lógica ou qualquer cód
 
 // ARQUIVO DA ESTRUTURA DA APLICAÇÃO
 import express from 'express'; // para conseguir escrever como import em vez de const express = require('express');
+import path from 'path';
 import routes from './routes'; // precisa dar yarn add sucrase nodemon -D, nodemon serve para atualizar as alterações
 
 import './database';
@@ -30,6 +31,11 @@ class App {
 
   middlewares() {
     this.server.use(express.json()); // receber requisição no formato json
+    // recurso do express express.static serve para seguir arquivos estáticos como imagem, css, html
+    this.server.use(
+      '/files',
+      express.static(path.resolve(__dirname, '..','tmp', 'uploads'))
+      );
   }
 
   routes() {
