@@ -6,9 +6,10 @@ import UserController from './app/controllers/UserController';
 import SessionController from './app/controllers/SessionController';
 import FileController from './app/controllers/FileController';
 import ProviderController from './app/controllers/ProviderController';
+import AppointmentController from './app/controllers/AppointmentController';
+import ScheduleController from './app/controllers/ScheduleController';
 
 import authMiddleware from './app/middlewares/auth';
-import AppointmentController from './app/controllers/AppointmentController';
 
 const routes = new Router();
 const upload = multer(multerConfig);
@@ -28,8 +29,12 @@ routes.put('/users', UserController.update);
 // rota para listagem dos prestadores de serviço
 routes.get ('/providers', ProviderController.index);
 
+//rota para listagem
+routes.get('/appointments', AppointmentController.index);
 // rota para agendamento -- TIMEZONE
 routes.post('/appointments', AppointmentController.store);
+
+routes.get('/schedule', ScheduleController.index);
 
 // rota do multer - imagem, no Insomnia criar post em multipart em vez de JSON
 // single para fazer um upload por vez e não vários e o nome do campo da requisição file
