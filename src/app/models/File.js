@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import Sequelize, { Model } from 'sequelize';
 
 class File extends Model {

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 // arquivo para autenticação do usuário, para logar
 // não usa o arquivo UserController.js pq nesse arquivo cria uma sessão e não um usuário
 // e no UserController já tem o método store e só pode ter uma vez o mesmo método em uma classe

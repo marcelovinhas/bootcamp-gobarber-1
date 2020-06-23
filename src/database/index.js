@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-// eslint-disable-next-line prettier/prettier
 // arquivo para realizar a conexão do banco de dados postgres e carregar todos os models da aplicação
 import Sequelize from 'sequelize';
 
