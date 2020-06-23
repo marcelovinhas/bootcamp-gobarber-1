@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import File from '../models/File';
 
 class FileController {

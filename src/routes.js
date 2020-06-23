@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Router } from 'express'; // importa apenas o Router em vez do express inteiro
 import multer from 'multer';
 import multerConfig from './config/multer';
@@ -29,7 +28,7 @@ routes.put('/users', UserController.update);
 // rota para listagem dos prestadores de serviço
 routes.get ('/providers', ProviderController.index);
 
-// rota para agendamento
+// rota para agendamento -- TIMEZONE
 routes.post('/appointments', AppointmentController.store);
 
 // rota do multer - imagem, no Insomnia criar post em multipart em vez de JSON

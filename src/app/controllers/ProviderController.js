@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 // ARQUIVO DE LISTAGEM DE PRESTADOR DE SERVIÇO
 
 import User from '../models/User';

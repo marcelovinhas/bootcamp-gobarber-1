@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 // TODA A CONFIGURAÇÃO DA PARTE DE UPLOAD DE ARQUIVOS
 
 import multer from 'multer';

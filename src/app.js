@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-// eslint-disable-next-line prettier/prettier
 // DOCKER + POSTGRES
 // instalar docker e fazer os passos do site https://www.optimadata.nl/blogs/3/n8dyr5-how-to-run-postgres-on-docker-part-1
 // para conectar no postbird o local host deve ser o endereço do ip que aparece no cmd do docker 192.168.99.100

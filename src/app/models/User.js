@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import Sequelize, { Model } from 'sequelize';
 import bcrypt from 'bcryptjs'; // gerar o hash da senha - yarn add bcryptjs
 

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 // arquivo para verificar se o usuário está logado para editar os dados
 // no Insomnia entrar no update, ir em Bearer e colocar o token adquirido do usuário
 

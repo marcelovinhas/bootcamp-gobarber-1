@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 // ARQUIVO DE CRIAÇÃO DE USUÁRIOS
 
 // YUP para validar dados de entrada, ver se o usuário enviou todos os dados - yarn add yup
