@@ -1,10 +1,41 @@
-// agendamento de serviço
+// agendamento de serviço, para o usuário comum
 import * as Yup from 'yup'; //para fazer validação do schema
 import {startOfHour, parseISO, isBefore} from 'date-fns'; //biblioteca de datas yarn add date-fns@next
-import Appointment from '../models/Appointment';
 import User from '../models/User';
+import File from '../models/File';
+import Appointment from '../models/Appointment';
 
 class AppointmentController {
+  async index(req,res) { //listagem de provedores de serviço
+    const { page = 1 } = req.query; //query é o parâmetro anexado na url (olocado no query do Insomnia)
+
+    const appointments = await Appointment.findAll({
+      where: { user_id: req.userId, canceled_at: null}, //lista os agendamentos que não foram cancelados
+      order: ['date'], //ordernar por data
+
+      limit: 20, //no máximo 20 agendamentos por página
+      offset: (page - 1) * 20, //se estiver na primeira página (1-1)*20 = 0 não pula registros
+      //se estiver na segunda página (2-1)*20 = 20 pula 20 registros
+      attributes: ['id','date'], //para retornar para o Imsomnia apenas id e data do agendamento
+      include: [ //incluir os dados do prestador de serviço
+        {
+          model: User,
+          as: 'provider', //como em Appointment.js relaciona com User duas vezes, precisa especificar
+          attributes: ['id', 'name'], //para retornar para o Imsomnia apenas id e name do usuário
+          include: [ //para retornar o avatar
+            {
+              model: File,
+              as: 'avatar',
+              attributes: ['id', 'path', 'url'], //path é obrigatório pois File.js depende de path
+            }
+          ]
+        },
+      ],
+    });
+
+    return res.json(appointments);
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       provider_id: Yup.number().required(),
@@ -17,11 +48,11 @@ class AppointmentController {
 
     const { provider_id, date } = req.body; //pega provider_id e date
 
-    const isProvider = await User.findOne({ //verifica se o usuário é um provedor de serviço
+    const checkisProvider = await User.findOne({ //verifica se o usuário é um provedor de serviço
       where: { id: provider_id, provider: true },
     });
 
-    if (!isProvider) {  //se não for provedor de serviço dá erro
+    if (!checkisProvider) {  //se não for provedor de serviço dá erro
       return res
         .status(401)
         .json({ error: 'You can only create appointments with providers' });
@@ -52,7 +83,7 @@ class AppointmentController {
     }
 
     const appointment = await Appointment.create({ //se passou pela verificação cria o agendamento
-      user_id: req.user_id, //pega o user de autenticação em auth.js
+      user_id: req.userId, //pega o user de autenticação em auth.js
       provider_id,
       date: hourStart, //verifica se a data digitada não é quebrada
     })
