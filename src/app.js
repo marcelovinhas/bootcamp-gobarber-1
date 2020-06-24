@@ -3,6 +3,14 @@
 // para conectar no postbird o local host deve ser o endereço do ip que aparece no cmd do docker 192.168.99.100
 // sequelize serve para poder escrever banco de dados em js em vez de sql
 
+// DOCKER + MONGODB
+// no docker: docker run --name mongobarber -p 27017:27017 -d -t mongo
+// não dá pra acessar por localhost:27017, não sei pq, não esquentar com isso
+// para conectar no mondodb pass community usar 192.168.99.100
+// mongodb é para utilizar banco não relacional
+// banco relacional para dados que não vão ser estruturados e não vão ter relacionamentos
+// para o postgres ou mysql usa o sequelize, para o mongodb usa mongoose, yarn add mongoose
+
 /*
 PASTAS
 CONFIG - maioria das configurações da aplicação

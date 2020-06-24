@@ -1,9 +1,11 @@
 // agendamento de serviço, para o usuário comum
 import * as Yup from 'yup'; //para fazer validação do schema
-import {startOfHour, parseISO, isBefore} from 'date-fns'; //biblioteca de datas yarn add date-fns@next
+import {startOfHour, parseISO, isBefore, format} from 'date-fns'; //biblioteca de datas yarn add date-fns@next
+import pt from 'date-fns/locale/pt'; //data em português
 import User from '../models/User';
 import File from '../models/File';
 import Appointment from '../models/Appointment';
+import Notification from '../schemas/Notification'; //enviar notificação para o prestador de serviço com os agendamentos
 
 class AppointmentController {
   async index(req,res) { //listagem de provedores de serviço
@@ -86,7 +88,22 @@ class AppointmentController {
       user_id: req.userId, //pega o user de autenticação em auth.js
       provider_id,
       date: hourStart, //verifica se a data digitada não é quebrada
-    })
+    });
+
+    const user = await User.findByPk(req.userId); //variável para colocar na notificação ${user.name}
+
+    const formattedDate = format( //para definir formato de data
+      hourStart, //data que quer formatar
+      "'dia' dd 'de' MMMM',  às' H:mm'h'", //formatação o que está em aspas simples '' sairá escrito literalmente
+      { locale: pt }
+    );
+
+    //notificação de agendamento para o prestador de serviço
+    await Notification.create({
+      content: `Novo agendamento de ${user.name} para ${formattedDate}`,
+      user: provider_id, //colocar qual usuário vai receber a notificação
+    });
+
 
     return res.json(appointment);
   }
