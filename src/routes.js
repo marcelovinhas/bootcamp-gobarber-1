@@ -34,6 +34,8 @@ routes.get ('/providers', ProviderController.index);
 routes.get('/appointments', AppointmentController.index);
 // rota para agendamento -- TIMEZONE
 routes.post('/appointments', AppointmentController.store);
+// rota para cancelar agendamento, pode cancelar com até duas horas do horário
+routes.delete('/appointments/:id', AppointmentController.delete);
 
 // rota para listagem de agendamentos do dia para o prestador de serviço
 routes.get('/schedule', ScheduleController.index);

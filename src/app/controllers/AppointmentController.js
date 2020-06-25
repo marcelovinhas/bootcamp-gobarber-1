@@ -1,6 +1,6 @@
 // agendamento de serviço, para o usuário comum
 import * as Yup from 'yup'; //para fazer validação do schema
-import {startOfHour, parseISO, isBefore, format} from 'date-fns'; //biblioteca de datas yarn add date-fns@next
+import {startOfHour, parseISO, isBefore, format, subHours} from 'date-fns'; //biblioteca de datas yarn add date-fns@next
 import pt from 'date-fns/locale/pt'; //data em português
 import User from '../models/User';
 import File from '../models/File';
@@ -105,6 +105,30 @@ class AppointmentController {
       user: provider_id, //colocar qual usuário vai receber a notificação
     });
 
+
+    return res.json(appointment);
+  }
+
+  async delete(req, res) {
+    const appointment = await Appointment.findByPk(req.params.id); //busca os dados do agendamento
+
+    if (appointment.user_id !== req.userId) { //verificar se o id que quer cancelar o agendamento, é o dono do agendamento
+      return res.status(401).json({ error: "You don't have permission to cancel this appointment"});
+    }
+
+    //subHours para verificar se o usuário deseja cancelar o agendamento pelo menos duas horas antes do horário marcado
+    const dateWithSub = subHours(appointment.date, 2);
+    //o campo de data no banco de dados já vem no formato data, não precisa USAR parseISO
+
+    //exemplo: agendamento marcado para as 13:00, dateWithSub: 11h, horário do computador é 11:25h
+    //no exemplo não pode mais cancelar o agendamento
+    if (isBefore(dateWithSub, new Date())) {
+      return res.status(401).json({ error: "You can only cancel appointments 2 hours in advance"});
+    }
+
+    appointment.canceled_at = new Date();
+
+    await appointment.save();
 
     return res.json(appointment);
   }
