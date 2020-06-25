@@ -94,8 +94,9 @@ class AppointmentController {
 
     const formattedDate = format( //para definir formato de data
       hourStart, //data que quer formatar
-      "'dia' dd 'de' MMMM',  às' H:mm'h'", //formatação o que está em aspas simples '' sairá escrito literalmente
-      { locale: pt }
+      "'dia' dd 'de' MMMM', às' H:mm'h'", //formatação o que está em aspas simples '' sairá escrito literalmente
+      //"dia 23 de julho, às 16:00" vai ficar assim no mongodb
+      { locale: pt } //para o mês ficar em português
     );
 
     //notificação de agendamento para o prestador de serviço
