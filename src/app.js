@@ -18,6 +18,8 @@ CONFIG - maioria das configurações da aplicação
 DATABASE - tudo relativo a parte de database e a configuração de conexão
 
 APP - maioria do código que envolve regra de negócio, lógica ou qualquer código, como controllers e models
+
+LIB - configuração de coisas adicionais da aplicação, como configuração de email por exemplo
 */
 
 // ARQUIVO DA ESTRUTURA DA APLICAÇÃO
