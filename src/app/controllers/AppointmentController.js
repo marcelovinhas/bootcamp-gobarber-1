@@ -6,6 +6,7 @@ import User from '../models/User';
 import File from '../models/File';
 import Appointment from '../models/Appointment';
 import Notification from '../schemas/Notification'; //enviar notificação para o prestador de serviço com os agendamentos
+import Mail from '../../lib/Mail';
 
 class AppointmentController {
   async index(req,res) { //listagem de provedores de serviço
@@ -110,7 +111,15 @@ class AppointmentController {
   }
 
   async delete(req, res) {
-    const appointment = await Appointment.findByPk(req.params.id); //busca os dados do agendamento
+    const appointment = await Appointment.findByPk(req.params.id, {
+      include: [ //incluir as informações do prestador de serviço para envio de email
+        {
+          model: User,
+          as: 'provider',
+          attributes: ['name', 'email'], //informações úteis para o email
+        }
+      ],
+    }); //busca os dados do agendamento
 
     if (appointment.user_id !== req.userId) { //verificar se o id que quer cancelar o agendamento, é o dono do agendamento
       return res.status(401).json({ error: "You don't have permission to cancel this appointment"});
@@ -129,6 +138,12 @@ class AppointmentController {
     appointment.canceled_at = new Date();
 
     await appointment.save();
+
+    await Mail.sendMail({
+      to: `${appointment.provider.name} <${appointment.provider.email}>`, //para quem vai enviar o email
+      subject: 'Agendamento cancelado',
+      text: 'Você tem um novo cancelamento',
+    });
 
     return res.json(appointment);
   }
