@@ -11,6 +11,14 @@
 // banco relacional para dados que não vão ser estruturados e não vão ter relacionamentos
 // para o postgres ou mysql usa o sequelize, para o mongodb usa mongoose, yarn add mongoose
 
+// DOCKER + REDIS
+// no docker: docker run --name redisbarber -p 6379:6379 -d -t redis:alpine
+// é um banco não relacional que diferente do mongodb usa apenas chave valor, por isso é mais performático
+// bee queue é mais performático mas não possui todas as funções de fila, para enviar email é o suficiente
+// kue é menos performático mas tem mais funções
+// yarn add bee-queue
+
+
 /*
 PASTAS
 CONFIG - maioria das configurações da aplicação
