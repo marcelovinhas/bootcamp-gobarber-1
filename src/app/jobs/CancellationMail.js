@@ -12,7 +12,7 @@ class CancellationMail {
   async handle({ data }) { //método que aplica a tarefa que precisa executar quando determinada fila
     const { appointment } = data; //data é a informação para o envio de email
 
-    await Mail.sendMail({
+    await Mail.senddMail({
       to: `${appointment.provider.name} <${appointment.provider.email}>`, //para quem vai enviar o email
       subject: 'Agendamento cancelado',
       template: 'cancellation', //arquivo do template
