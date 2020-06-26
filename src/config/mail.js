@@ -1,7 +1,8 @@
 // MANDAR EMAIL DE CANCELAMENTO PARA O PRESTADOR DE SERVIÇO - yarn add nodemailer
 /*
-Mailtrap para ambiente de desenvolvimento
+Mailtrap.io para ambiente de desenvolvimento
 criar conta e pegar as informações de host, port, auth (user e pass)
+quando cancelar um agendamento pelo Insomnia dá pra ver como seria o email pelo mailtrap
 */
 
 export default {
