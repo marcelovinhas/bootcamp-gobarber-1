@@ -6,7 +6,9 @@ import User from '../models/User';
 import File from '../models/File';
 import Appointment from '../models/Appointment';
 import Notification from '../schemas/Notification'; //enviar notificação para o prestador de serviço com os agendamentos
-import Mail from '../../lib/Mail';
+
+import CancellationMail from '../jobs/CancellationMail';
+import Queue from '../../lib/Queue';
 
 class AppointmentController {
   async index(req,res) { //listagem de provedores de serviço
@@ -111,7 +113,7 @@ class AppointmentController {
   }
 
   async delete(req, res) {
-    const appointment = await Appointment.findByPk(req.params.id, {
+    const appointment = await Appointment.findByPk(req.params.id, { //busca os dados do agendamento
       include: [ //incluir as informações do prestador de serviço para envio de email
         {
           model: User,
@@ -144,6 +146,15 @@ class AppointmentController {
 
     await appointment.save();
 
+    /*
+    o tempo de resposta da requisição de cancelamento demora muito mais que os outros
+    é possível tirar o await para diminuir, mas caso haja algum erro nessa parte não saberiamos
+    pois a resposta ja teria retornado, a melhor forma de melhorar o tempo é usar filas ou background jobs
+    tipos de serviço que executam em segundo plano, para coisas que levam mais tempo
+    para isso usa banco redis que é um banco chave valor, não relacional mas sem schema, apenas chave valor
+    por isso, é mais performático que mongodb, docker run --name redisbarber -p 6379:6379 -d -t redis:alpine
+    esse trecho abaixo foi passado para CancellationMail.js
+
     await Mail.sendMail({
       to: `${appointment.provider.name} <${appointment.provider.email}>`, //para quem vai enviar o email
       subject: 'Agendamento cancelado',
@@ -155,6 +166,11 @@ class AppointmentController {
           locale: pt,
         }),
       },
+    });
+    */
+
+    await Queue.add(CancellationMail.key, {
+      appointment,
     });
 
     return res.json(appointment);
