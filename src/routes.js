@@ -47,7 +47,7 @@ routes.put('/notifications/:id', NotificationController.update);
 
 // rota do multer - imagem, no Insomnia criar post em multipart em vez de JSON
 // single para fazer um upload por vez e não vários e o nome do campo da requisição file
-routes.post ('/files', upload.single('file'),FileController.store);
+routes.post ('/files', upload.single('file'), FileController.store);
 
 
 

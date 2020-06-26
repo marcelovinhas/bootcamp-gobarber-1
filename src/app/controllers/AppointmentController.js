@@ -15,11 +15,12 @@ class AppointmentController {
     const appointments = await Appointment.findAll({
       where: { user_id: req.userId, canceled_at: null}, //lista os agendamentos que não foram cancelados
       order: ['date'], //ordernar por data
+      attributes: ['id','date'], //para retornar para o Imsomnia apenas id e data do agendamento
 
       limit: 20, //no máximo 20 agendamentos por página
       offset: (page - 1) * 20, //se estiver na primeira página (1-1)*20 = 0 não pula registros
       //se estiver na segunda página (2-1)*20 = 20 pula 20 registros
-      attributes: ['id','date'], //para retornar para o Imsomnia apenas id e data do agendamento
+
       include: [ //incluir os dados do prestador de serviço
         {
           model: User,
@@ -30,8 +31,8 @@ class AppointmentController {
               model: File,
               as: 'avatar',
               attributes: ['id', 'path', 'url'], //path é obrigatório pois File.js depende de path
-            }
-          ]
+            },
+          ],
         },
       ],
     });
@@ -68,7 +69,7 @@ class AppointmentController {
 
     //verifica se a data do agendamento desejado com a data atual, ve se a data já passou, é antiga
     if (isBefore(hourStart, new Date())) {
-      return res.status(400).json({ error: 'Past dates are not permitted'});
+      return res.status(400).json({ error: 'Past dates are not permitted' });
     }
 
     //verifica se a data que o usuário deseja marcar está livre, com intervalo de 1h
@@ -78,7 +79,7 @@ class AppointmentController {
         canceled_at: null, //verifica se o agendamento estiver cancelado
         date: hourStart, //verifica se a data digitada não é quebrada
       },
-    })
+    });
 
     //se a data não estiver vaga
     if (checkAvailability) {
@@ -106,7 +107,6 @@ class AppointmentController {
       user: provider_id, //colocar qual usuário vai receber a notificação
     });
 
-
     return res.json(appointment);
   }
 
@@ -117,12 +117,17 @@ class AppointmentController {
           model: User,
           as: 'provider',
           attributes: ['name', 'email'], //informações úteis para o email
-        }
+        },
+        {
+          model: User,
+          as: 'user',
+          attributes: ['name'],
+        },
       ],
-    }); //busca os dados do agendamento
+    });
 
     if (appointment.user_id !== req.userId) { //verificar se o id que quer cancelar o agendamento, é o dono do agendamento
-      return res.status(401).json({ error: "You don't have permission to cancel this appointment"});
+      return res.status(401).json({ error: "You don't have permission to cancel this appointment" });
     }
 
     //subHours para verificar se o usuário deseja cancelar o agendamento pelo menos duas horas antes do horário marcado
@@ -132,7 +137,7 @@ class AppointmentController {
     //exemplo: agendamento marcado para as 13:00, dateWithSub: 11h, horário do computador é 11:25h
     //no exemplo não pode mais cancelar o agendamento
     if (isBefore(dateWithSub, new Date())) {
-      return res.status(401).json({ error: "You can only cancel appointments 2 hours in advance"});
+      return res.status(401).json({ error: "You can only cancel appointments 2 hours in advance" });
     }
 
     appointment.canceled_at = new Date();
@@ -142,7 +147,14 @@ class AppointmentController {
     await Mail.sendMail({
       to: `${appointment.provider.name} <${appointment.provider.email}>`, //para quem vai enviar o email
       subject: 'Agendamento cancelado',
-      text: 'Você tem um novo cancelamento',
+      template: 'cancellation', //arquivo do template
+      context: { //enviar as variáveis que o template está esperando
+        provider: appointment.provider.name,
+        user: appointment.user.name,
+        date: format(appointment.date, "'dia' dd 'de' MMMM', às' H:mm'h'", {
+          locale: pt,
+        }),
+      },
     });
 
     return res.json(appointment);
