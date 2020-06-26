@@ -8,7 +8,8 @@ import FileController from './app/controllers/FileController';
 import ProviderController from './app/controllers/ProviderController';
 import AppointmentController from './app/controllers/AppointmentController';
 import ScheduleController from './app/controllers/ScheduleController';
-import NotificationController from './app/controllers/NotificationController.js';
+import NotificationController from './app/controllers/NotificationController';
+import AvailableController from './app/controllers/AvailableController';
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -29,6 +30,9 @@ routes.put('/users', UserController.update);
 
 // rota para listagem dos prestadores de serviço
 routes.get ('/providers', ProviderController.index);
+// rota para listar horários disponíveis do prestador de serviço em um dia
+// em query enviar o campo date no formato timestamp, escrever new Date().getTime() em inspecionar, console em algum site
+routes.get ('/providers/:providerId/available', AvailableController.index);
 
 //rota para listagem
 routes.get('/appointments', AppointmentController.index);
