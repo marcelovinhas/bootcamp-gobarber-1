@@ -6,12 +6,12 @@ quando cancelar um agendamento pelo Insomnia dá pra ver como seria o email pelo
 */
 
 export default {
-  host: 'smtp.mailtrap.io', //endereço
-  port: '2525', //porta
+  host: process.env.MAIL_HOST, //endereço
+  port: process.env.MAIL_PORT, //porta
   secure: false, //se usa ssl ou não
   auth: { //autenticação do email
-    user: "ab485ad579881c", //usuário
-    pass: '796219bdeef935' //senha
+    user: process.env.MAIL_USER, //usuário
+    pass: process.env.MAIL_PASS, //senha
   },
   default: { //configurações padrão
     from: 'Equipe GoBarber <noreply@gobaber.com>', //remetente do email

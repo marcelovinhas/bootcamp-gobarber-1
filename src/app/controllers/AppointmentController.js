@@ -17,7 +17,7 @@ class AppointmentController {
     const appointments = await Appointment.findAll({
       where: { user_id: req.userId, canceled_at: null}, //lista os agendamentos que não foram cancelados
       order: ['date'], //ordernar por data
-      attributes: ['id','date'], //para retornar para o Imsomnia apenas id e data do agendamento
+      attributes: ['id','date', 'past', 'cancelable'], //dados que deseja aparecer no Imsomnia
 
       limit: 20, //no máximo 20 agendamentos por página
       offset: (page - 1) * 20, //se estiver na primeira página (1-1)*20 = 0 não pula registros
