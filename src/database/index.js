@@ -26,7 +26,7 @@ class Database {
 
   mongo() {
     this.mongoConnection = mongoose.connect(
-      'mongodb://192.168.99.100:27017/gobarber', //url de conexão do mongo
+      process.env.MONGO_URL, //url de conexão do mongo
       { useNewUrlParser: true, useUnifiedTopology: true }
       //useNewUrlParser pq está usando um formato de url do mongodb mais nova, que não era usado antes
       //useUnifiedTopology era pra ser useFindAndModify configuração para encontrar e modificar registros

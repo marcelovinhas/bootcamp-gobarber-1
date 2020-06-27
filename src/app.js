@@ -18,6 +18,18 @@
 // kue é menos performático mas tem mais funções
 // yarn add bee-queue
 
+// TRATAMENTO DE EXCEÇÕES
+// quando a aplicação vai para produção, pode acontecer vários erros, na fila, nos querys dos bancos de dados
+// para saber dos erros usar sentry ou bugsnag, prefere sentry.io
+// criar projeto em express ou nodejs, yarn add @sentry/node@5.18.1
+// como faz o async no AppointmentController o express não consegue pegar esses erros, por isso yarn add express-async-errors
+// se houver algum erro aparece no sentry.io mostrando, também pode aparecer no próprio visual studio
+// yarn add youch dá uma visualização melhor dos tratamentos de erro para o desenvolvedor para aparecer no Insomnia
+// sentry consegue integrar com slack para envio de email, github
+
+// VARIÁVEIS DE AMBIENTE
+// informações escritas em .env
+
 
 /*
 PASTAS
@@ -31,9 +43,16 @@ LIB - configuração de coisas adicionais da aplicação, como configuração de
 */
 
 // ARQUIVO DA ESTRUTURA DA APLICAÇÃO
+import 'dotenv/config'; //carrega as variáveis de ambiente e coloca em process.env
+
 import express from 'express'; // para conseguir escrever como import em vez de const express = require('express');
 import path from 'path';
+import Youch from 'youch';
+import * as Sentry from '@sentry/node'; // tratamento de erros para aplicação em produção
+import 'express-async-errors'; // esse import deve vir antes das rotas
+
 import routes from './routes'; // precisa dar yarn add sucrase nodemon -D, nodemon serve para atualizar as alterações
+import sentryConfig from './config/sentry';
 
 import './database';
 
@@ -41,21 +60,38 @@ class App {
   constructor() {
     this.server = express();
 
+    Sentry.init(sentryConfig); //inicializa sentry
+
     this.middlewares(); // chama o método middlewares
     this.routes(); // chama o método routes
+    this.exceptionHandler(); //chama método exceptionHandler para tratamento de erro
   }
 
   middlewares() {
+    this.server.use(Sentry.Handlers.requestHandler()); //necessário antes das rotas, documentação sentry
     this.server.use(express.json()); // receber requisição no formato json
     // recurso do express express.static serve para seguir arquivos estáticos como imagem, css, html
     this.server.use(
       '/files',
       express.static(path.resolve(__dirname, '..','tmp', 'uploads'))
-      );
+    );
   }
 
   routes() {
     this.server.use(routes);
+    this.server.use(Sentry.Handlers.errorHandler()); //necessário depois das rotas, documentação sentry
+  }
+
+  exceptionHandler() {
+    this.server.use(async (err, req, res, next) => { //middleware de 4 parâmetros é para tratamento de exceções
+      if(process.env.NODE_ENV === 'development') { //verifica se o ambiente é development
+      const errors = await new Youch(err, req).toJSON();
+
+      return res.status(500).json(errors);
+      }
+
+      return res.status(500).json({ error: 'Internal server error' });
+    });
   }
 }
 
